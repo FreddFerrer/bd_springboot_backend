@@ -88,11 +88,11 @@ public class ClienteRestController {
             clienteActual.setEmail(cliente.getEmail());
             update = clienteService.save(clienteActual);
         } catch (DataAccessException e) {
-            response.put("mensaje", "error al actualizar la base de datos");
+            response.put("mensaje", "Error al actualizar la base de datos");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        response.put("mensaje", "el cliente ha sido actualizado con exito");
+        response.put("mensaje", "El cliente ha sido actualizado con exito");
         response.put("cliente", update);
 
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
@@ -108,11 +108,11 @@ public class ClienteRestController {
         try{
             clienteService.delete(id);
         } catch (DataAccessException e){
-            response.put("mensaje", "error al borrar el cliente de la base de datos");
+            response.put("mensaje", "Error al borrar el cliente de la base de datos");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        response.put("mensaje", "cliente eliminado con exito");
+        response.put("mensaje", "Cliente eliminado con exito");
 
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 

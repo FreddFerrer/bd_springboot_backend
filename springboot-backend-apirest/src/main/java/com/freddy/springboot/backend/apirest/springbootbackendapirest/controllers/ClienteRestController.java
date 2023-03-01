@@ -1,12 +1,16 @@
 package com.freddy.springboot.backend.apirest.springbootbackendapirest.controllers;
 import com.freddy.springboot.backend.apirest.springbootbackendapirest.models.entity.Cliente;
 import com.freddy.springboot.backend.apirest.springbootbackendapirest.models.services.IClienteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,9 +53,31 @@ public class ClienteRestController {
     }
 
     @PostMapping("/clientes")
-    public ResponseEntity<?> create(@RequestBody Cliente cliente){
+    public ResponseEntity<?> create(@Valid @RequestBody Cliente cliente, BindingResult result){
         Cliente nuevoCliente = null;
         Map<String, Object> response = new HashMap<>();
+
+        //FORMA 1
+        if(result.hasErrors()){
+            List<String> errores = new ArrayList<>();
+            for(FieldError err: result.getFieldErrors()){
+                errores.add("El campo '" + err.getField() +"' " + err.getDefaultMessage());
+            }
+            response.put("errores", errores);
+            return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+        }
+        //FORMA2
+        /*
+            List<String> errores = result.getFieldErrors()
+                .stream()
+                .map(err -> return "El campo '" + err.getField() +"' " + err.getDefaultMessage())
+                .collect(Collectors.toList());
+
+            response.put("errores", errores);
+            return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+
+         */
+
 
         //MANEJO DE ERRORES
 
@@ -69,13 +95,22 @@ public class ClienteRestController {
     }
 
     @PutMapping("/clientes/{id}")
-    public ResponseEntity<?> update(@RequestBody Cliente cliente ,@PathVariable Long id){
+    public ResponseEntity<?> update(@RequestBody Cliente cliente, BindingResult result ,@PathVariable Long id){
 
         //MANEJO DE ERRORES
 
         Cliente clienteActual = clienteService.findById(id);
         Cliente update = null;
         Map<String, Object> response = new HashMap<>();
+
+        if(result.hasErrors()){
+            List<String> errores = new ArrayList<>();
+            for(FieldError err: result.getFieldErrors()){
+                errores.add("El campo '" + err.getField() +"' " + err.getDefaultMessage());
+            }
+            response.put("errores", errores);
+            return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+        }
 
         if(clienteActual == null) {
             response.put("mensaje", "El cliente id: ".concat(id.toString().concat(" no existe en la bd")));

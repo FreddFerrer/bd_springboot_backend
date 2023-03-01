@@ -4,6 +4,10 @@ package com.freddy.springboot.backend.apirest.springbootbackendapirest.models.en
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.BatchSize;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,9 +20,16 @@ public class Cliente implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty
+    @Size(min = 4, max = 15)
     @Column(nullable = false)
     private String nombre;
+
+    @NotEmpty
     private String apellido;
+
+    @NotEmpty
+    @Email
     @Column(nullable = false, unique = true)
     private String email;
     @Column(name = "create_at")
